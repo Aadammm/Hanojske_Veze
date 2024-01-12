@@ -23,16 +23,16 @@ namespace Hanojske_Veze
             int zVeze;
             int naVezu;
             int kotuc;
+            int pocetTahov = 0;
             do
             {
-                Console.Clear();
                 Console.WriteLine(Vypis(veze));
-                Console.WriteLine("Přesunout kotouč z věže: ");
+                Console.Write("Přesunout kotouč z věže: ");
                 //z ktorej veze vezme kotuc
                 while (!int.TryParse(Console.ReadLine(), out zVeze) || zVeze < 1 || zVeze > 3)
                     Console.WriteLine("Zadej znovu:");
 
-                Console.WriteLine("Přesunout kotouč na věž: ");
+                Console.Write("Přesunout kotouč na věž: ");
                 //na ktoru vezu polozi kotuc
                 while (!int.TryParse(Console.ReadLine(), out naVezu) || naVezu < 1 || naVezu > 3)
                     Console.WriteLine("Zadej znovu:");
@@ -40,82 +40,65 @@ namespace Hanojske_Veze
                 if (veze[zVeze - 1].Count > 0)
                 {
                     kotuc = veze[zVeze - 1].Peek();
-                    //ak je v zasobniku kotuc mensi tak ho tam neprida
-                    try
-                    {
-                        if (veze[naVezu - 1].Peek() > kotuc)
-                        {
-                            veze[zVeze - 1].Pop();
-                            veze[naVezu - 1].Push(kotuc);
-                        }
-                    }
-                    catch (Exception)
+
+                    if (veze[naVezu - 1].Count == 0 || veze[naVezu - 1].Peek() > kotuc)
                     {
                         veze[zVeze - 1].Pop();
                         veze[naVezu - 1].Push(kotuc);
                     }
+
                 }
-               
+                pocetTahov++;
             }
-            while (!Koniec(veza2));
+            while (!Koniec(veza2,veza3));
             Console.WriteLine(Vypis(veze));
             Console.WriteLine("Vyhrál jsi!");
+            // Console.WriteLine("Pocet tahov {0}",pocetTahov);
             Console.Read();
 
 
         }
-        static bool Koniec(Stack<int> DruhaVeza)
+        static bool Koniec(Stack<int> DruhaVeza, Stack<int> TretiaVeza)
         {
-            int pocetKotucov = 1;
-            foreach (int i in DruhaVeza)
-            {
-                if (i == pocetKotucov)
-                    pocetKotucov++;
-            }
-
-            if (pocetKotucov == 6)
+         if(DruhaVeza.Count==5||TretiaVeza.Count==5)
                 return true;
             return false;
         }
         static string Vypis(List<Stack<int>> list)
         {
+            Console.Clear();
             string[] kotuce = { "", "█", "██", "███", "████", "█████" };
             int[][] kopia = new int[list.Count][];
             for (int i = 0; i < kopia.Length; i++)
             {
                 kopia[i] = new int[list[i].Count];
                 int zaciatok = 0;
-                int koniec = list[i].Count;
                 foreach (int item in list[i])
                 {
-                    if (zaciatok < koniec)
-                    {
-                        kopia[i][zaciatok] = item;
-                        zaciatok++;
-                    }
+                    kopia[i][zaciatok] = item;
+                    zaciatok++;
                 }
+                Array.Reverse(kopia[i]);
             }
             //vypis textu
-            string text = "1".PadRight(10) + "2".PadRight(10) + "3\n";
-            for (int j = 0; j <5; j++)
+            List<string> riadky = new List<string>();
+            for (int j = 4; j >= 0; j--)
             {
-                if (j < kopia[0].Length&& kopia[0].Length!=0)
-                    text += kotuce[kopia[0][j]].PadLeft(5) + kotuce[kopia[0][j]].PadRight(5);
-                else
-                text+="".PadLeft(10);    
-                if (j < kopia[1].Length && kopia[1].Length != 0 )
-                    text += kotuce[kopia[1][j]].PadLeft(5) + kotuce[kopia[1][j]].PadRight(5);
-                else
-                    text += "".PadLeft(10);
-                if (j < kopia[2].Length && kopia[2].Length != 0 )
-                    text += kotuce[kopia[2][j]].PadLeft(5) + kotuce[kopia[2][j]].PadRight(5);
-                else
-                    text += "".PadLeft(10);
-
-                text += "\n";
+                string riadok = "";
+                for (int i = 0; i < kopia.Length; i++)
+                {
+                    if (j < kopia[i].Length && kopia[i].Length != 0)
+                        riadok += kotuce[kopia[i][j]].PadLeft(5) + kotuce[kopia[i][j]].PadRight(5);
+                    else
+                        riadok += "".PadLeft(10);
+                }
+                riadky.Add(riadok + "\n");
             }
-
-            //toto funguje     text += kotuce[kopia[0][j]].PadLeft(5)+ kotuce[kopia[0][j]].PadRight(5);
+            string text = "1".PadRight(10) + "2".PadRight(10) + "3\n";
+            foreach (string riadkyOpacne in riadky)
+            {
+                text += riadkyOpacne;
+            }
             return text;
         }
     }
