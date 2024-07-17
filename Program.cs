@@ -12,13 +12,13 @@ namespace Hanojske_Veze
     {
         static void Main(string[] args)
         {
-            Stack<int> veza1 = new Stack<int>();
-            Stack<int> veza2 = new Stack<int>();
-            Stack<int> veza3 = new Stack<int>();
-            var veze = new List<Stack<int>>() { veza1, veza2, veza3 };
+            Stack<int> tower1 = new Stack<int>();
+            Stack<int> tower2 = new Stack<int>();
+            Stack<int> tower3 = new Stack<int>();
+            var towers = new List<Stack<int>>() { tower1, tower2, tower3 };
             for (int i = 5; i >= 1; i--)
             {
-                veza1.Push(i);
+                tower1.Push(i);
             }
             int zVeze;
             int naVezu;
@@ -26,45 +26,45 @@ namespace Hanojske_Veze
             int pocetTahov = 0;
             do
             {
-                Console.WriteLine(Vypis(veze));
+                Console.WriteLine(Display(towers));
                 Console.Write("Přesunout kotouč z věže: ");
                 //z ktorej veze vezme kotuc
                 while (!int.TryParse(Console.ReadLine(), out zVeze) || zVeze < 1 || zVeze > 3)
-                    Console.WriteLine("Zadej znovu:");
+                    Console.WriteLine("Choose again:");
 
                 Console.Write("Přesunout kotouč na věž: ");
                 //na ktoru vezu polozi kotuc
                 while (!int.TryParse(Console.ReadLine(), out naVezu) || naVezu < 1 || naVezu > 3)
-                    Console.WriteLine("Zadej znovu:");
+                    Console.WriteLine("Choose again:");
                 //vezme kotuc z veze
-                if (veze[zVeze - 1].Count > 0)
+                if (towers[zVeze - 1].Count > 0)
                 {
-                    kotuc = veze[zVeze - 1].Peek();
+                    kotuc = towers[zVeze - 1].Peek();
 
-                    if (veze[naVezu - 1].Count == 0 || veze[naVezu - 1].Peek() > kotuc)
+                    if (towers[naVezu - 1].Count == 0 || towers[naVezu - 1].Peek() > kotuc)
                     {
-                        veze[zVeze - 1].Pop();
-                        veze[naVezu - 1].Push(kotuc);
+                        towers[zVeze - 1].Pop();
+                        towers[naVezu - 1].Push(kotuc);
                     }
 
                 }
                 pocetTahov++;
             }
-            while (!Koniec(veza2,veza3));
-            Console.WriteLine(Vypis(veze));
-            Console.WriteLine("Vyhrál jsi!");
-            // Console.WriteLine("Pocet tahov {0}",pocetTahov);
+            while (!End(tower2, tower3));
+            Console.WriteLine(Display(towers));
+            Console.WriteLine("You won!");
+             Console.WriteLine("Numbers of moves {0}",pocetTahov);
             Console.Read();
 
 
         }
-        static bool Koniec(Stack<int> DruhaVeza, Stack<int> TretiaVeza)
+        static bool End(Stack<int> DruhaVeza, Stack<int> TretiaVeza)
         {
          if(DruhaVeza.Count==5||TretiaVeza.Count==5)
                 return true;
             return false;
         }
-        static string Vypis(List<Stack<int>> list)
+        static string Display(List<Stack<int>> list)
         {
             Console.Clear();
             string[] kotuce = { "", "█", "██", "███", "████", "█████" };
